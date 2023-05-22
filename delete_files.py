@@ -17,9 +17,9 @@ if len(sys.argv) > 1:
         print('Did not find files with .' + str(extension) + ' in this location ' + str(location))
     else:
         print("Found " + str(countedFiles) + " in this location " +str(location) +
-     "\nDo you want to delete the files? Type y or n")
+     "\nDo you want to delete the files? Type [y] or [n]")
         while True:
-            decision = input().lstrip()
+            decision = input().lstrip().lower()
 
             if decision == 'y':
                 for filename in os.listdir():
