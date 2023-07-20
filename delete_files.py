@@ -1,17 +1,28 @@
 import sys
 import os
 
-if len(sys.argv) > 1:
+if len(sys.argv) == 2:
     extension = str(sys.argv[1])
     location = os.getcwd()
-    print("Current location: " + str(location) +
-      "\nFound files with extension ." + str(extension) + " :")
+    files_to_delete = []
     countedFiles = 0
 
-    for filename in os.listdir():
-        if filename.endswith("." + str(extension)):
-            print(filename)
-            countedFiles += 1
+    print("Current location: " + str(location))
+
+    if extension.lower() == "nan":
+        print("Found files without extension:")
+        for filename in os.listdir():
+            if not os.path.splitext(filename)[1] and os.path.isfile(filename) == True:
+                print(filename)
+                files_to_delete.append(filename)
+                countedFiles += 1
+    else:
+        print("Found files with extension ." + str(extension) + ":")
+        for filename in os.listdir():
+            if filename.endswith("." + str(extension)):
+                print(filename)
+                files_to_delete.append(filename)
+                countedFiles += 1
 
     if countedFiles == 0:
         print('Did not find files with .' + str(extension) + ' in this location ' + str(location))
@@ -22,9 +33,8 @@ if len(sys.argv) > 1:
             decision = input().lstrip().lower()
 
             if decision == 'y':
-                for filename in os.listdir():
-                    if filename.endswith("." + str(extension)):
-                        os.unlink(filename)
+                for file in files_to_delete:
+                    os.unlink(file)
                 print("Files deleted")
                 break
 
