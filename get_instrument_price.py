@@ -190,7 +190,7 @@ if len(sys.argv) > 1:
             print(code + " (" + instrument + "): " + str(round(value, 2)) + " PLN")
 else:
     print("Please provide filename")
-    print("The faile name should consist lines with below data:")
+    print("The file should consist lines with below data:")
     print("<site> <number> <intrument type> <intrument code> <currency>")
     print("Supported sites: tradinig212.com, investing.pl")
     print("Intrument code should match the one used in site url")
