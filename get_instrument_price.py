@@ -69,7 +69,7 @@ def get_exchange_rate_from_xe(currency):
     return value
 
 def get_prize_from_investing(code, instrument):
-    xpath = "//*[@id='__next']/div[2]/div[2]/div[1]/div[1]/div[3]/div/div[1]/div[1]"
+    xpath = "/html/body/div[1]/div[2]/div[3]/div[1]/div[1]/div[3]/div/div[1]/div[1]"
     instrument= instrument.upper()
     if instrument == "STOCK":
         url = "https://pl.investing.com/equities/"
@@ -92,7 +92,9 @@ def get_prize_from_investing(code, instrument):
         return -1
 
     prize = driver.find_element(By.XPATH, xpath)
-    value_string = str(prize.text)
+    split_text = prize.text.split('\n')
+
+    value_string = str(split_text[0])
 
     if ',' in value_string:
         value_string = value_string.replace(',', '.')
