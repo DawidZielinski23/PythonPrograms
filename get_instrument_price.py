@@ -7,19 +7,20 @@ from selenium.webdriver.support import expected_conditions as EC
 import re
 import sys
 
-def get_exchange_rate_from_xe(currency):
+def get_exchange_rate_from_xe(currency, debug):
     url = "https://www.xe.com"
-    xpath_button = "//button[@class='button__BaseButton-sc-1qpsalo-0 haqezJ']"
-    xpath_input_from = "//input[@id='midmarketFromCurrency']"
-    xpath_input_to = "//input[@id='midmarketToCurrency']"
-    xpath_button_convert = "//div[@class='currency-converter__SubmitZone-zieln1-3 eIzYlj']/button[@class='button__BaseButton-sc-1qpsalo-0 clGTKJ']"
-    xpath_result = "//p[@class='result__BigRate-sc-1bsijpp-1 iGrAod']"
+    xpath_button = "/html/body/div[1]/div[3]/div[2]/section/div[2]/div/main/div/div[2]/button"
+    xpath_input_from = "/html/body/div[1]/div[3]/div[2]/section/div[2]/div/main/div/div[1]/div[3]/div[2]/div/input"
+    xpath_input_to = "/html/body/div[1]/div[3]/div[2]/section/div[2]/div/main/div/div[1]/div[8]/div[2]/div/input"
+    xpath_button_convert = "/html/body/div[1]/div[3]/div[2]/section/div[2]/div/main/div/div[2]/button"
+    xpath_result = "/html/body/div[1]/div[3]/div[2]/section/div[2]/div/main/div/div[2]/div[1]/p[2]"
 
     currency = currency.upper()
 
     chrome_options = Options()
-    chrome_options.add_argument("--headless")
-    chrome_options.add_experimental_option("excludeSwitches", ["enable-logging"])
+    if debug == False:
+        chrome_options.add_argument("--headless")
+        chrome_options.add_experimental_option("excludeSwitches", ["enable-logging"])
     driver = webdriver.Chrome(options = chrome_options)
 
     driver.get(url)
@@ -68,8 +69,8 @@ def get_exchange_rate_from_xe(currency):
 
     return value
 
-def get_prize_from_investing(code, instrument):
-    xpath = "/html/body/div[1]/div[2]/div[3]/div[1]/div[1]/div[3]/div/div[1]/div[1]"
+def get_prize_from_investing(code, instrument, debug):
+    xpath = "/html/body/div[1]/div[2]/div[2]/div[2]/div[1]/div[1]/div[3]/div/div[1]/div[1]/div[1]"
     instrument= instrument.upper()
     if instrument == "STOCK":
         url = "https://pl.investing.com/equities/"
@@ -80,8 +81,9 @@ def get_prize_from_investing(code, instrument):
         return -1
 
     chrome_options = Options()
-    chrome_options.add_argument("--headless")
-    chrome_options.add_experimental_option("excludeSwitches", ["enable-logging"])
+    if debug == False:
+        chrome_options.add_argument("--headless")
+        chrome_options.add_experimental_option("excludeSwitches", ["enable-logging"])
     driver = webdriver.Chrome(options = chrome_options)
 
     driver.get(url + code)
@@ -103,15 +105,16 @@ def get_prize_from_investing(code, instrument):
 
     return value
 
-def get_prize_from_trading212(code):
+def get_prize_from_trading212(code, debug):
     code = code.upper()
     url = "https://www.trading212.com/pl/trading-instruments/invest/"
     xpath = "//*[@id='__next']/main/section[1]/div/div/div[1]/div[1]/section/div[2]/div/label/label[2]"
 
     chrome_options = Options()
-    # trading212 is not working with --headless argument
-    #chrome_options.add_argument("--headless")
-    chrome_options.add_experimental_option("excludeSwitches", ["enable-logging"])
+    if debug == False:
+        # trading212 is not working with --headless argument
+        #chrome_options.add_argument("--headless")
+        chrome_options.add_experimental_option("excludeSwitches", ["enable-logging"])
     driver = webdriver.Chrome(options = chrome_options)
 
     driver.get(url + code)
@@ -135,11 +138,15 @@ if len(sys.argv) > 1:
     currency_code_list = ["PLN"]
     currency_value_list = [1]
     found = False
+    debug = False
 
     try:
         file = open(sys.argv[1], "r")
     except:
         print("Failed to open file " + sys.argv[1])
+
+    if len(sys.argv) > 2:
+        debug = (sys.argv[2] == "debug")
 
     lines = file.readlines()
 
@@ -166,7 +173,7 @@ if len(sys.argv) > 1:
             currency_value = currency_value_list[index]
             found = False
         else:
-            currency_value = get_exchange_rate_from_xe(currency_code)
+            currency_value = get_exchange_rate_from_xe(currency_code, debug)
             if currency_value == -1:
                 error = 1
             else:
@@ -175,9 +182,9 @@ if len(sys.argv) > 1:
 
         instrument_prize = -1
         if site == "investing":
-            instrument_prize = get_prize_from_investing(code, instrument)
+            instrument_prize = get_prize_from_investing(code, instrument, debug)
         elif site == "trading212":
-            instrument_prize = get_prize_from_trading212(code)
+            instrument_prize = get_prize_from_trading212(code, debug)
         else:
             print("Not supported site")
             error = 1
