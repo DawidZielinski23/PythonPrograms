@@ -70,7 +70,7 @@ def get_exchange_rate_from_xe(currency, debug):
     return value
 
 def get_prize_from_investing(code, instrument, debug):
-    xpath = "/html/body/div[1]/div[2]/div[2]/div[2]/div[1]/div[1]/div[3]/div/div[1]/div[1]/div[1]"
+    xpath = "/html/body/div[1]/div[2]/div[2]/div[2]/div[1]/div[1]/div[3]/div[1]/div[1]/div[1]"
     instrument= instrument.upper()
     if instrument == "STOCK":
         url = "https://pl.investing.com/equities/"
