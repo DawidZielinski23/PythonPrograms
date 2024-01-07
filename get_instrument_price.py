@@ -63,7 +63,10 @@ def get_exchange_rate_from_xe(currency, debug):
 
     value_re = re.findall("\d+\.\d+", value_field.text)
 
-    value = float(value_re[0])
+    try:
+        value = float(value_re[0])
+    except:
+        print("Cannot convert string value to float")
 
     driver.close()
 
@@ -101,7 +104,10 @@ def get_prize_from_investing(code, instrument, debug):
     if ',' in value_string:
         value_string = value_string.replace(',', '.')
 
-    value = float(value_string)
+    try:
+        value = float(value_string)
+    except:
+        print("Cannot convert string value to float")
 
     return value
 
@@ -130,7 +136,10 @@ def get_prize_from_trading212(code, debug):
     if ',' in value_string:
         value_string = value_string.replace(',', '.')
 
-    value = float(value_string)
+    try:
+        value = float(value_string)
+    except:
+        print("Cannot convert string value to float")
 
     return value
 

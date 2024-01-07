@@ -21,7 +21,11 @@ if len(sys.argv) == 2:
                 countedFiles += 1
 
     if countedFiles == 0:
-        print('Did not find files with .' + str(extension) + ' in this location ' + str(location))
+        if extension.lower() == "nan":
+            print('Did not find files without extension in this location ' + str(location))
+        else:
+            print('Did not find files with ' + str(extension) + ' in this location '
+                  + str(location))
     else:
         print("Found " + str(countedFiles) + " in this location " + str(location))
         for file in files_to_delete:
@@ -32,7 +36,10 @@ if len(sys.argv) == 2:
 
             if decision == 'y':
                 for file in files_to_delete:
-                    os.unlink(file)
+                    try:
+                        os.unlink(file)
+                    except:
+                        print('Cannot delete ' + str(file))
                 print("Files deleted")
                 break
 

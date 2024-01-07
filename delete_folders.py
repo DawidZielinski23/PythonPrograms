@@ -23,7 +23,10 @@ if counted_folders > 0:
         decision = input().lstrip().lower()
         if decision == 'y':
             for folder in folders_to_delete:
-                shutil.rmtree(folder)
+                try:
+                    shutil.rmtree(folder)
+                except:
+                    print("Cannot delete " + str(folder) + " folder")
             print("Folders deleted")
             break
 
