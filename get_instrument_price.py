@@ -9,11 +9,12 @@ import sys
 
 def get_exchange_rate_from_xe(currency, debug):
     url = "https://www.xe.com"
-    xpath_button = "/html/body/div[1]/div[3]/div[2]/section/div[2]/div/main/div/div[2]/button"
-    xpath_input_from = "/html/body/div[1]/div[3]/div[2]/section/div[2]/div/main/div/div[1]/div[3]/div[2]/div/input"
-    xpath_input_to = "/html/body/div[1]/div[3]/div[2]/section/div[2]/div/main/div/div[1]/div[8]/div[2]/div/input"
-    xpath_button_convert = "/html/body/div[1]/div[3]/div[2]/section/div[2]/div/main/div/div[2]/button"
-    xpath_result = "/html/body/div[1]/div[3]/div[2]/section/div[2]/div/main/div/div[2]/div[1]/p[2]"
+    css_selector_result = "#__next > div:nth-child(4) > div.fluid-container__BaseFluidContainer-sc-qoidzu-0.UiqMO > section > div:nth-child(2) > div > main > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > p.result__BigRate-sc-1bsijpp-1.dPdXSB"
+    css_selector_div_from = "#midmarketFromCurrency"
+    css_selector_input_from = "#midmarketFromCurrency > div:nth-child(2) > div > input"
+    css_selector_div_to = "#midmarketToCurrency"
+    css_selector_input_to = "#midmarketToCurrency > div:nth-child(2) > div > input"
+    css_selector_button_convert = "#__next > div:nth-child(4) > div.fluid-container__BaseFluidContainer-sc-qoidzu-0.UiqMO > section > div:nth-child(2) > div > main > div > div.currency-converter__SubmitZone-sc-zieln1-2.hQloAE > button"
 
     currency = currency.upper()
 
@@ -21,45 +22,66 @@ def get_exchange_rate_from_xe(currency, debug):
     if debug == False:
         chrome_options.add_argument("--headless")
         chrome_options.add_experimental_option("excludeSwitches", ["enable-logging"])
+        chrome_options.add_argument('--log-level=3')
     driver = webdriver.Chrome(options = chrome_options)
 
     driver.get(url)
-    try:
-        WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.XPATH, xpath_button)))
-    except:
-        return -1
 
-    select_from = driver.find_element(By.XPATH, xpath_input_from)
     try:
+        select_from = driver.find_element(By.CSS_SELECTOR, css_selector_div_from)
         select_from.click()
     except:
+        print("Cannot find div from")
         return -1
-    WebDriverWait(driver, 2)
-    select_from.send_keys(currency)
-    WebDriverWait(driver, 2)
-    select_from.send_keys(Keys.ENTER)
-    WebDriverWait(driver, 5)
-
-    select_to = driver.find_element(By.XPATH, xpath_input_to)
-    select_to.click()
-    WebDriverWait(driver, 2)
-    select_to.send_keys("PLN")
-    WebDriverWait(driver, 2)
-    select_to.send_keys(Keys.ENTER)
-    WebDriverWait(driver, 5)
-
-
-    button = driver.find_element(By.XPATH, xpath_button_convert)
-    if button != None:
-        button.click()
 
     try:
-        WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, xpath_result)))
+        select_input_from = driver.find_element(By.CSS_SELECTOR, css_selector_input_from)
+        WebDriverWait(driver, 2)
+        select_input_from.send_keys(currency)
+        WebDriverWait(driver, 2)
+        select_input_from.send_keys(Keys.ENTER)
+        WebDriverWait(driver, 5)
     except:
+        print("Cannot set curency from")
+        return -1
+    
+    try:
+        select_to = driver.find_element(By.CSS_SELECTOR, css_selector_div_to)
+        select_to.click()
+    except:
+        print("Cannot find div to")
+        return -1
+
+    try:
+        select_input_to = driver.find_element(By.CSS_SELECTOR, css_selector_input_to)
+        WebDriverWait(driver, 2)
+        select_input_to.send_keys("PLN")
+        WebDriverWait(driver, 2)
+        select_input_to.send_keys(Keys.ENTER)
+        WebDriverWait(driver, 5)
+    except:
+        print("Cannot set currency to")
+        return -1
+
+    try:
+        button = driver.find_element(By.CSS_SELECTOR, css_selector_button_convert)
+        button.click()
+    except:
+        print("Cannot find convert button")
+        return -1
+
+    try:
+        WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, css_selector_result)))
+    except:
+        print("Exchange value not load")
         return -1
     WebDriverWait(driver,2)
 
-    value_field = driver.find_element(By.XPATH, xpath_result)
+    try:
+        value_field = driver.find_element(By.CSS_SELECTOR, css_selector_result)
+    except:
+        print("Cannot find exchange value")
+        return -1
 
     value_re = re.findall("\d+\.\d+", value_field.text)
 
@@ -67,6 +89,7 @@ def get_exchange_rate_from_xe(currency, debug):
         value = float(value_re[0])
     except:
         print("Cannot convert string value to float")
+        return -1
 
     driver.close()
 
@@ -87,6 +110,7 @@ def get_prize_from_investing(code, instrument, debug):
     if debug == False:
         chrome_options.add_argument("--headless")
         chrome_options.add_experimental_option("excludeSwitches", ["enable-logging"])
+        chrome_options.add_argument('--log-level=3')
     driver = webdriver.Chrome(options = chrome_options)
 
     driver.get(url + code)
@@ -121,6 +145,7 @@ def get_prize_from_trading212(code, debug):
         # trading212 is not working with --headless argument
         #chrome_options.add_argument("--headless")
         chrome_options.add_experimental_option("excludeSwitches", ["enable-logging"])
+        chrome_options.add_argument('--log-level=3')
     driver = webdriver.Chrome(options = chrome_options)
 
     driver.get(url + code)
