@@ -9,7 +9,7 @@ import sys
 
 def get_exchange_rate_from_xe(currency, debug):
     url = "https://www.xe.com"
-    css_selector_result = "#__next > div:nth-child(4) > div.fluid-container__BaseFluidContainer-sc-qoidzu-0.UiqMO > section > div:nth-child(2) > div > main > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > p.result__BigRate-sc-1bsijpp-1.dPdXSB"
+    css_selector_result = "#__next > div:nth-child(4) > div.fluid-container__BaseFluidContainer-sc-qoidzu-0.UiqMO > section > div:nth-child(2) > div > main > div:nth-child(3) > div:nth-child(2) > div:nth-child(1) > p.result__BigRate-sc-1bsijpp-1.dPdXSB"
     css_selector_div_from = "#midmarketFromCurrency"
     css_selector_input_from = "#midmarketFromCurrency > div:nth-child(2) > div > input"
     css_selector_div_to = "#midmarketToCurrency"
