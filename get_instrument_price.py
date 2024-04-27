@@ -9,12 +9,12 @@ import sys
 
 def get_exchange_rate_from_xe(currency, debug):
     url = "https://www.xe.com"
-    css_selector_result = "#__next > div:nth-child(4) > div.fluid-container__BaseFluidContainer-sc-qoidzu-0.UiqMO > section > div:nth-child(2) > div > main > div > div:nth-child(2) > div:nth-child(1) > p.result__BigRate-sc-1bsijpp-1.dPdXSB"
+    css_selector_result = "#__next > div:nth-child(4) > div.sc-2b1c5c79-0.frAgUY > section > div:nth-child(2) > div > main > div > div:nth-child(2) > div:nth-child(1) > div > p.sc-1c293993-1.fxoXHw"
     css_selector_div_from = "#midmarketFromCurrency"
     css_selector_input_from = "#midmarketFromCurrency > div:nth-child(2) > div > input"
     css_selector_div_to = "#midmarketToCurrency"
     css_selector_input_to = "#midmarketToCurrency > div:nth-child(2) > div > input"
-    css_selector_button_convert = "#__next > div:nth-child(4) > div.fluid-container__BaseFluidContainer-sc-qoidzu-0.UiqMO > section > div:nth-child(2) > div > main > div > div.currency-converter__SubmitZone-sc-zieln1-2.hQloAE > button"
+    css_selector_button_convert = "#__next > div:nth-child(4) > div.sc-2b1c5c79-0.frAgUY > section > div:nth-child(2) > div > main > div > div.sc-2cb11539-2.jHPffh > button"
 
     currency = currency.upper()
 
