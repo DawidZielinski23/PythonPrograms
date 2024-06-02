@@ -6,6 +6,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import re
 import sys
+import time
 
 def get_exchange_rate_from_xe(currency, debug):
     url = "https://www.xe.com"
@@ -14,7 +15,7 @@ def get_exchange_rate_from_xe(currency, debug):
     css_selector_input_from = "#midmarketFromCurrency > div:nth-child(2) > div > input"
     css_selector_div_to = "#midmarketToCurrency"
     css_selector_input_to = "#midmarketToCurrency > div:nth-child(2) > div > input"
-    css_selector_button_convert = "#__next > div:nth-child(4) > div.sc-2b1c5c79-0.frAgUY > section > div:nth-child(2) > div > main > div > div.sc-2cb11539-2.jHPffh > button"
+    css_selector_button_convert = "#__next > div:nth-child(4) > div.sc-2b1c5c79-0.frAgUY > section > div:nth-child(2) > div > main > div > div.sc-4f0f6f94-2.chRjcw > button"
 
     currency = currency.upper()
 
@@ -38,9 +39,8 @@ def get_exchange_rate_from_xe(currency, debug):
         select_input_from = driver.find_element(By.CSS_SELECTOR, css_selector_input_from)
         WebDriverWait(driver, 2)
         select_input_from.send_keys(currency)
-        WebDriverWait(driver, 2)
+        time.sleep(1)
         select_input_from.send_keys(Keys.ENTER)
-        WebDriverWait(driver, 5)
     except:
         print("Cannot set curency from")
         return -1
@@ -56,9 +56,8 @@ def get_exchange_rate_from_xe(currency, debug):
         select_input_to = driver.find_element(By.CSS_SELECTOR, css_selector_input_to)
         WebDriverWait(driver, 2)
         select_input_to.send_keys("PLN")
-        WebDriverWait(driver, 2)
+        time.sleep(1)
         select_input_to.send_keys(Keys.ENTER)
-        WebDriverWait(driver, 5)
     except:
         print("Cannot set currency to")
         return -1
@@ -66,6 +65,7 @@ def get_exchange_rate_from_xe(currency, debug):
     try:
         button = driver.find_element(By.CSS_SELECTOR, css_selector_button_convert)
         button.click()
+        time.sleep(2)
     except:
         print("Cannot find convert button")
         return -1
@@ -75,7 +75,7 @@ def get_exchange_rate_from_xe(currency, debug):
     except:
         print("Exchange value not load")
         return -1
-    WebDriverWait(driver,2)
+    WebDriverWait(driver, 2)
 
     try:
         value_field = driver.find_element(By.CSS_SELECTOR, css_selector_result)
