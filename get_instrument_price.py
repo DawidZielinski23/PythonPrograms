@@ -10,7 +10,7 @@ import time
 
 def get_exchange_rate_from_xe(currency, debug):
     url = "https://www.xe.com"
-    css_selector_result = "#__next > div:nth-child(4) > div.sc-2b1c5c79-0.frAgUY > section > div:nth-child(2) > div > main > div > div:nth-child(2) > div:nth-child(1) > div > p.sc-1c293993-1.fxoXHw"
+    css_selector_result = "#__next > div:nth-child(4) > div.sc-2b1c5c79-0.frAgUY > section > div:nth-child(2) > div > main > div > div:nth-child(2) > div:nth-child(1) > div > p.sc-295edd9f-1.jqMUXt"
     css_selector_div_from = "#midmarketFromCurrency"
     css_selector_input_from = "#midmarketFromCurrency > div:nth-child(2) > div > input"
     css_selector_div_to = "#midmarketToCurrency"
