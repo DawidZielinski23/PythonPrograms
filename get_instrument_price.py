@@ -10,16 +10,17 @@ import time
 
 def get_exchange_rate_from_xe(currency, debug):
     url = "https://www.xe.com"
-    css_selector_result = "#__next > div:nth-child(4) > div.sc-2b1c5c79-0.frAgUY > section > div:nth-child(2) > div > main > div > div:nth-child(2) > div:nth-child(1) > div > p.sc-295edd9f-1.jqMUXt"
+    css_selector_result = "#__next > div > div:nth-child(4) > div.sc-2b1c5c79-0.frAgUY > section > div:nth-child(2) > div > main > div > div:nth-child(2) > div:nth-child(1) > div > p.sc-e08d6cef-1.fwpLse"
     css_selector_div_from = "#midmarketFromCurrency"
     css_selector_input_from = "#midmarketFromCurrency > div:nth-child(2) > div > input"
     css_selector_div_to = "#midmarketToCurrency"
     css_selector_input_to = "#midmarketToCurrency > div:nth-child(2) > div > input"
-    css_selector_button_convert = "#__next > div:nth-child(4) > div.sc-2b1c5c79-0.frAgUY > section > div:nth-child(2) > div > main > div > div.sc-4f0f6f94-2.chRjcw > button"
+    css_selector_button_convert = "#__next > div > div:nth-child(4) > div.sc-2b1c5c79-0.frAgUY > section > div:nth-child(2) > div > main > div > div.sc-4f0f6f94-2.chRjcw > button"
 
     currency = currency.upper()
 
     chrome_options = Options()
+    chrome_options.add_argument("--disable-search-engine-choice-screen")
     if debug == False:
         chrome_options.add_argument("--headless")
         chrome_options.add_experimental_option("excludeSwitches", ["enable-logging"])
@@ -107,8 +108,9 @@ def get_prize_from_investing(code, instrument, debug):
         return -1
 
     chrome_options = Options()
+    chrome_options.add_argument("--disable-search-engine-choice-screen")
     if debug == False:
-        chrome_options.add_argument("--headless")
+        #chrome_options.add_argument("--headless")
         chrome_options.add_experimental_option("excludeSwitches", ["enable-logging"])
         chrome_options.add_argument('--log-level=3')
     driver = webdriver.Chrome(options = chrome_options)
@@ -141,6 +143,7 @@ def get_prize_from_trading212(code, debug):
     xpath = "//*[@id='__next']/main/section[1]/div/div/div[1]/div[1]/section/div[2]/div/label/label[2]"
 
     chrome_options = Options()
+    chrome_options.add_argument("--disable-search-engine-choice-screen")
     if debug == False:
         # trading212 is not working with --headless argument
         #chrome_options.add_argument("--headless")
