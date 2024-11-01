@@ -10,12 +10,12 @@ import time
 
 def get_exchange_rate_from_xe(currency, debug):
     url = "https://www.xe.com"
-    css_selector_result = "#__next > div > div:nth-child(4) > div.sc-898f2b1d-0.gRAglo > section > div:nth-child(2) > div > main > div > div:nth-child(2) > div:nth-child(1) > div > p.sc-48043a1-1.hjTGVC"
+    css_selector_result = "#__next > div > div:nth-child(5) > div.bg-white > div.relative.bg-gradient-to-l.from-blue-850.to-blue-700.pt-\[96px\].md\:pt-8 > div.m-auto.grid.max-w-screen-xl.gap-6.px-4.md\:mt-24.md\:gap-12.md\:px-10 > div > div.flex.flex-col.gap-6.rounded-3xl.bg-white.p-6.shadow-3xl.md\:p-8 > div:nth-child(3) > div > div.\[grid-area\:conversion\] > div:nth-child(1) > p.sc-423c2a5f-1.gPUWGS"
     css_selector_div_from = "#midmarketFromCurrency"
     css_selector_input_from = "#midmarketFromCurrency > div:nth-child(2) > div > input"
     css_selector_div_to = "#midmarketToCurrency"
     css_selector_input_to = "#midmarketToCurrency > div:nth-child(2) > div > input"
-    css_selector_button_convert = "#__next > div > div:nth-child(4) > div.sc-898f2b1d-0.gRAglo > section > div:nth-child(2) > div > main > div > div.sc-4f0f6f94-2.chRjcw > button"
+    css_selector_button_convert = "#__next > div > div:nth-child(5) > div.bg-white > div.relative.bg-gradient-to-l.from-blue-850.to-blue-700.pt-\[96px\].md\:pt-8 > div.m-auto.grid.max-w-screen-xl.gap-6.px-4.md\:mt-24.md\:gap-12.md\:px-10 > div > div.flex.flex-col.gap-6.rounded-3xl.bg-white.p-6.shadow-3xl.md\:p-8 > div.flex.flex-col.items-center.gap-6.md\:flex-row.justify-end > button"
     currency = currency.upper()
 
     chrome_options = Options()
