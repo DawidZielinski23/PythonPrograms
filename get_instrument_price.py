@@ -7,6 +7,7 @@ from selenium.webdriver.support import expected_conditions as EC
 import re
 import sys
 import time
+import prettytable
 
 def get_exchange_rate_from_xe(currency, debug):
     url = "https://www.xe.com"
@@ -185,6 +186,7 @@ if len(sys.argv) > 1:
         debug = (sys.argv[2] == "debug")
 
     lines = file.readlines()
+    table = prettytable.PrettyTable(["Element", "Wartość"])
 
     for line in lines:
         data = line.split()
@@ -232,7 +234,9 @@ if len(sys.argv) > 1:
             print("Cannot get price for instrument " + str(code))
         else:
             value = float(count) * float(currency_value) * float(instrument_prize)
-            print(code + " (" + instrument + "): " + str(round(value, 2)) + " PLN")
+            table.add_row([(code + " " + instrument), str(round(value, 2))])
+
+    print(table)
 else:
     print("Please provide filename")
     print("The file should consist lines with below data:")
