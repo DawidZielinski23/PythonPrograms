@@ -11,7 +11,7 @@ import prettytable
 
 def get_exchange_rate_from_xe(currency, debug):
     url = "https://www.xe.com"
-    css_selector_result = "#__next > div > div:nth-child(5) > div.bg-white > div.relative.bg-gradient-to-l.from-blue-850.to-blue-700.pt-\[96px\].md\:pt-8 > div.m-auto.grid.max-w-screen-xl.gap-6.px-4.md\:mt-24.md\:gap-12.md\:px-10 > div > div.flex.flex-col.gap-6.rounded-3xl.bg-white.p-6.shadow-3xl.md\:p-8 > div:nth-child(3) > div > div.\[grid-area\:conversion\] > div:nth-child(1) > p.sc-294d8168-1.hVDvqw"
+    css_selector_result = "#__next > div > div:nth-child(5) > div.bg-white > div.relative.bg-gradient-to-l.from-blue-850.to-blue-700.pt-\[96px\].md\:pt-8 > div.m-auto.grid.max-w-screen-xl.gap-6.px-4.md\:mt-24.md\:gap-12.md\:px-10 > div > div.flex.flex-col.gap-6.rounded-3xl.bg-white.p-6.shadow-3xl.md\:p-8 > div:nth-child(3) > div > div.\[grid-area\:conversion\] > div:nth-child(1) > p.sc-708e65be-1.chuBHG"
     css_selector_div_from = "#midmarketFromCurrency"
     css_selector_input_from = "#midmarketFromCurrency > div:nth-child(2) > div > input"
     css_selector_div_to = "#midmarketToCurrency"
