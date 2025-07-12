@@ -11,12 +11,12 @@ import prettytable
 
 def get_exchange_rate_from_xe(currency, debug):
     url = "https://www.xe.com"
-    css_selector_result = "#__next > div > div:nth-child(6) > div > div.relative.bg-gradient-to-l.from-blue-850.to-blue-700.pt-8 > div.m-auto.grid.max-w-screen-xl.gap-6.px-4.md\:gap-12.md\:px-10 > div > div.flex.flex-col.gap-6.rounded-3xl.bg-white.p-6.shadow-3xl.md\:p-8 > div:nth-child(3) > div > div.\[grid-area\:conversion\] > div:nth-child(1) > p.sc-708e65be-1.chuBHG"
+    css_selector_result = "#__next > div > div:nth-child(6) > div > div.relative.bg-gradient-to-l.from-blue-850.to-blue-700.pt-8 > div.m-auto.grid.max-w-screen-xl.gap-6.px-4.md\:gap-12.md\:px-10 > div > div.flex.flex-col.gap-6.rounded-3xl.bg-white.p-6.shadow-3xl.md\:p-8 > div:nth-child(3) > div > div.\[grid-area\:conversion\] > div:nth-child(1) > p.sc-56d5cf17-1.ifKLEd"
     css_selector_div_from = "#midmarketFromCurrency"
     css_selector_input_from = "#midmarketFromCurrency > div:nth-child(2) > div > input"
     css_selector_div_to = "#midmarketToCurrency"
     css_selector_input_to = "#midmarketToCurrency > div:nth-child(2) > div > input"
-    css_selector_button_convert = "#__next > div > div:nth-child(6) > section.relative.flex.justify-center.bg-gray-100.pt-8.pb-8.md\:pt-16.md\:pb-16 > div > div > div.flex.flex-col.items-center.gap-6.md\:flex-row.justify-end > button"
+    css_selector_button_convert = "#__next > div > div:nth-child(5) > section.relative.flex.justify-center.bg-gray-100.pt-8.pb-8.md\:pt-16.md\:pb-16 > div > div > div.flex.flex-col.items-center.gap-6.md\:flex-row.justify-end > button"
     currency = currency.upper()
 
     chrome_options = Options()
