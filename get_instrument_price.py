@@ -109,6 +109,7 @@ def get_prize_from_investing(code, instrument, debug):
 
     chrome_options = Options()
     chrome_options.add_argument("--disable-search-engine-choice-screen")
+    chrome_options.page_load_strategy = 'none'
     if debug == False:
         #chrome_options.add_argument("--headless")
         chrome_options.add_experimental_option("excludeSwitches", ["enable-logging"])
