@@ -11,7 +11,7 @@ import prettytable
 
 def get_exchange_rate_from_xe(currency, debug):
     url = "https://www.xe.com"
-    css_selector_result = "#__next > main > div:nth-child(5) > div > div.relative.bg-gradient-to-l.from-blue-850.to-blue-700.pt-8 > div.m-auto.grid.max-w-screen-xl.gap-6.px-4.md\:gap-12.md\:px-10 > div > div.flex.flex-col.gap-6.rounded-3xl.bg-white.p-6.shadow-3xl.md\:p-8 > div:nth-child(3) > div > div.\[grid-area\:conversion\] > div:nth-child(1) > p.sc-c5062ab2-1.jKDFIr"
+    css_selector_result = "#__next > main > div:nth-child(5) > div > section.relative.w-full.bg-gradient-to-l.from-blue-850.to-blue-700.bg-no-repeat > div.relative.m-auto.box-content.max-w-\[1024px\].px-4.py-8.md\:px-10.md\:pt-16.lg\:pt-20 > div > div > div > div:nth-child(1) > p.text-lg.font-semibold.text-xe-neutral-900.md\:text-2xl > span"
     css_selector_div_from = "#midmarketFromCurrency"
     css_selector_input_from = "#midmarketFromCurrency > div:nth-child(2) > div > input"
     css_selector_div_to = "#midmarketToCurrency"
@@ -33,6 +33,7 @@ def get_exchange_rate_from_xe(currency, debug):
         select_from = driver.find_element(By.CSS_SELECTOR, css_selector_div_from)
         select_from.click()
     except:
+        driver.close()
         print("Cannot find div from")
         return -1
 
@@ -43,6 +44,7 @@ def get_exchange_rate_from_xe(currency, debug):
         time.sleep(1)
         select_input_from.send_keys(Keys.ENTER)
     except:
+        driver.close()
         print("Cannot set curency from")
         return -1
     
@@ -50,6 +52,7 @@ def get_exchange_rate_from_xe(currency, debug):
         select_to = driver.find_element(By.CSS_SELECTOR, css_selector_div_to)
         select_to.click()
     except:
+        driver.close()
         print("Cannot find div to")
         return -1
 
@@ -60,6 +63,7 @@ def get_exchange_rate_from_xe(currency, debug):
         time.sleep(1)
         select_input_to.send_keys(Keys.ENTER)
     except:
+        driver.close()
         print("Cannot set currency to")
         return -1
 
@@ -68,12 +72,14 @@ def get_exchange_rate_from_xe(currency, debug):
         button.click()
         time.sleep(2)
     except:
+        driver.close()
         print("Cannot find convert button")
         return -1
 
     try:
         WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, css_selector_result)))
     except:
+        driver.close()
         print("Exchange value not load")
         return -1
     WebDriverWait(driver, 2)
@@ -81,23 +87,24 @@ def get_exchange_rate_from_xe(currency, debug):
     try:
         value_field = driver.find_element(By.CSS_SELECTOR, css_selector_result)
     except:
+        driver.close()
         print("Cannot find exchange value")
         return -1
 
-    value_re = re.findall("\d+\.\d+", value_field.text)
-
-    try:
-        value = float(value_re[0])
-    except:
-        print("Cannot convert string value to float")
-        return -1
+    pattern = r"(\d+\.\d+)\s+PLN"
+    value_re = re.search(pattern, value_field.text)
 
     driver.close()
+
+    try:
+        value = float(value_re.group(1))
+    except:
+        return -1
 
     return value
 
 def get_prize_from_investing(code, instrument, debug):
-    xpath = "/html/body/div[1]/div[2]/div[2]/div[2]/div[1]/div[1]/div[3]/div[1]/div[1]/div[1]"
+    selector = "#__next > div.md\:relative.md\:bg-white > div.relative.flex > div.grid.flex-1.grid-cols-1.px-4.pt-5.font-sans-v2.text-\[\#232526\].antialiased.transition-all.xl\:container.sm\:px-6.md\:gap-6.md\:px-7.md\:pt-10.md2\:gap-8.md2\:px-8.xl\:mx-auto.xl\:gap-10.xl\:px-10.md\:grid-cols-\[1fr_72px\].md2\:grid-cols-\[1fr_420px\] > div.min-w-0 > div.flex.flex-col.gap-6.md\:gap-0 > div.flex.gap-6 > div.flex-1 > div.mb-3.flex.flex-wrap.items-center.gap-x-4.gap-y-2.md\:mb-0\.5.md\:gap-6 > div.text-5xl\/9.font-bold.text-\[\#232526\].md\:text-\[42px\].md\:leading-\[60px\]"
     instrument= instrument.upper()
     if instrument == "STOCK":
         url = "https://pl.investing.com/equities/"
@@ -117,16 +124,19 @@ def get_prize_from_investing(code, instrument, debug):
     driver = webdriver.Chrome(options = chrome_options)
 
     driver.get(url + code)
+    time.sleep(2)
 
     try:
-        WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, xpath)))
+        prize = driver.find_element(By.CSS_SELECTOR, selector)
+        split_text = prize.text.split('\n')
     except:
+        print(1)
+        driver.close()
         return -1
 
-    prize = driver.find_element(By.XPATH, xpath)
-    split_text = prize.text.split('\n')
-
     value_string = str(split_text[0])
+
+    driver.close()
 
     if ',' in value_string:
         value_string = value_string.replace(',', '.')
@@ -155,12 +165,15 @@ def get_prize_from_trading212(code, debug):
     driver.get(url + code)
 
     try:
-        WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.XPATH, xpath)))
+        WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, xpath)))
     except:
+        driver.close()
         return -1
 
     prize = driver.find_element(By.XPATH, xpath)
     value_string = str(prize.text)
+
+    driver.close()
 
     if ',' in value_string:
         value_string = value_string.replace(',', '.')
