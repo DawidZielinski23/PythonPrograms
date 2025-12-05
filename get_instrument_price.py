@@ -9,6 +9,46 @@ import sys
 import time
 import prettytable
 
+class Driver:
+    def __init__(self, url, debug = False, strategy = "normal"):
+        if type(url) != str:
+            raise TypeError("Invalid url")
+
+        if type(debug) != bool:
+            raise TypeError("Invalid debug flag")
+
+        if type(strategy) != str:
+            raise TypeError("Invalid stategy")
+        
+        if strategy not in {"normal", "eager", "none"}:
+            raise ValueError("Invalid strategy value")
+
+        chrome_options = Options()
+        chrome_options.add_argument("--disable-search-engine-choice-screen")
+        chrome_options.page_load_strategy = strategy
+        if debug == False:
+            #chrome_options.add_argument("--headless")
+            chrome_options.add_experimental_option("excludeSwitches", ["enable-logging"])
+            chrome_options.add_argument('--log-level=3')
+
+        self.__web = webdriver.Chrome(options = chrome_options)
+        try:
+            self.__web.get(url)
+        except:
+            raise RuntimeError("Failed to open url")
+
+    def __del__(self):
+        if self.__web is not None:
+            self.__web.close()
+
+    @property
+    def web(self):
+        if self.__web is not None:
+            return self.__web
+        else:
+            raise RuntimeError("No webdriver created")
+
+
 def get_exchange_rate_from_xe(currency, debug):
     url = "https://www.xe.com"
     css_selector_result = "#__next > main > div:nth-child(5) > div > section.relative.w-full.bg-gradient-to-l.from-blue-850.to-blue-700.bg-no-repeat > div.relative.m-auto.box-content.max-w-\[1024px\].px-4.py-8.md\:px-10.md\:pt-16.lg\:pt-20 > div > div > div > div:nth-child(1) > p.text-lg.font-semibold.text-xe-neutral-900.md\:text-2xl > span"
@@ -19,82 +59,66 @@ def get_exchange_rate_from_xe(currency, debug):
     css_selector_button_convert = "#__next > main > div:nth-child(5) > section.relative.flex.justify-center.bg-gray-100.pt-8.pb-8.md\:pt-16.md\:pb-16 > div > div > div.flex.flex-col.items-center.gap-6.md\:flex-row.justify-end > button"
     currency = currency.upper()
 
-    chrome_options = Options()
-    chrome_options.add_argument("--disable-search-engine-choice-screen")
-    if debug == False:
-        #chrome_options.add_argument("--headless")
-        chrome_options.add_experimental_option("excludeSwitches", ["enable-logging"])
-        chrome_options.add_argument('--log-level=3')
-    driver = webdriver.Chrome(options = chrome_options)
-
-    driver.get(url)
+    driver = Driver(url, debug)
 
     try:
-        select_from = driver.find_element(By.CSS_SELECTOR, css_selector_div_from)
+        select_from = driver.web.find_element(By.CSS_SELECTOR, css_selector_div_from)
         select_from.click()
     except:
-        driver.close()
         print("Cannot find div from")
         return -1
 
     try:
-        select_input_from = driver.find_element(By.CSS_SELECTOR, css_selector_input_from)
-        WebDriverWait(driver, 2)
+        select_input_from = driver.web.find_element(By.CSS_SELECTOR, css_selector_input_from)
+        WebDriverWait(driver.web, 2)
         select_input_from.send_keys(currency)
         time.sleep(1)
         select_input_from.send_keys(Keys.ENTER)
     except:
-        driver.close()
         print("Cannot set curency from")
         return -1
     
     try:
-        select_to = driver.find_element(By.CSS_SELECTOR, css_selector_div_to)
+        select_to =  driver.web.find_element(By.CSS_SELECTOR, css_selector_div_to)
         select_to.click()
     except:
-        driver.close()
         print("Cannot find div to")
         return -1
 
     try:
-        select_input_to = driver.find_element(By.CSS_SELECTOR, css_selector_input_to)
-        WebDriverWait(driver, 2)
+        select_input_to =  driver.web.find_element(By.CSS_SELECTOR, css_selector_input_to)
+        WebDriverWait(driver.web, 2)
         select_input_to.send_keys("PLN")
         time.sleep(1)
         select_input_to.send_keys(Keys.ENTER)
     except:
-        driver.close()
         print("Cannot set currency to")
         return -1
 
     try:
-        button = driver.find_element(By.CSS_SELECTOR, css_selector_button_convert)
+        button = driver.web.find_element(By.CSS_SELECTOR, css_selector_button_convert)
         button.click()
         time.sleep(2)
     except:
-        driver.close()
         print("Cannot find convert button")
         return -1
 
     try:
-        WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, css_selector_result)))
+        WebDriverWait(driver.web, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, css_selector_result)))
     except:
-        driver.close()
         print("Exchange value not load")
         return -1
-    WebDriverWait(driver, 2)
+
+    WebDriverWait(driver.web, 2)
 
     try:
-        value_field = driver.find_element(By.CSS_SELECTOR, css_selector_result)
+        value_field = driver.web.find_element(By.CSS_SELECTOR, css_selector_result)
     except:
-        driver.close()
         print("Cannot find exchange value")
         return -1
 
     pattern = r"(\d+\.\d+)\s+PLN"
     value_re = re.search(pattern, value_field.text)
-
-    driver.close()
 
     try:
         value = float(value_re.group(1))
@@ -114,29 +138,20 @@ def get_prize_from_investing(code, instrument, debug):
         print("wrong instrument")
         return -1
 
-    chrome_options = Options()
-    chrome_options.add_argument("--disable-search-engine-choice-screen")
-    chrome_options.page_load_strategy = 'none'
-    if debug == False:
-        #chrome_options.add_argument("--headless")
-        chrome_options.add_experimental_option("excludeSwitches", ["enable-logging"])
-        chrome_options.add_argument('--log-level=3')
-    driver = webdriver.Chrome(options = chrome_options)
+    complete_url = url + code
 
-    driver.get(url + code)
+    driver = Driver(complete_url, debug, 'none')
+
     time.sleep(2)
 
     try:
-        prize = driver.find_element(By.CSS_SELECTOR, selector)
+        prize = driver.web.find_element(By.CSS_SELECTOR, selector)
         split_text = prize.text.split('\n')
     except:
-        print(1)
-        driver.close()
+        print("Cannot get value for string")
         return -1
 
     value_string = str(split_text[0])
-
-    driver.close()
 
     if ',' in value_string:
         value_string = value_string.replace(',', '.')
@@ -153,27 +168,17 @@ def get_prize_from_trading212(code, debug):
     url = "https://www.trading212.com/pl/trading-instruments/invest/"
     xpath = "//*[@id='__next']/main/section[1]/div/div/div[1]/div[1]/section/div[2]/div/label/label[2]"
 
-    chrome_options = Options()
-    chrome_options.add_argument("--disable-search-engine-choice-screen")
-    if debug == False:
-        # trading212 is not working with --headless argument
-        #chrome_options.add_argument("--headless")
-        chrome_options.add_experimental_option("excludeSwitches", ["enable-logging"])
-        chrome_options.add_argument('--log-level=3')
-    driver = webdriver.Chrome(options = chrome_options)
+    complete_url = url + code
 
-    driver.get(url + code)
+    driver = Driver(complete_url, debug)
 
     try:
-        WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, xpath)))
+        WebDriverWait(driver.web, 10).until(EC.presence_of_element_located((By.XPATH, xpath)))
     except:
-        driver.close()
         return -1
 
-    prize = driver.find_element(By.XPATH, xpath)
+    prize = driver.web.find_element(By.XPATH, xpath)
     value_string = str(prize.text)
-
-    driver.close()
 
     if ',' in value_string:
         value_string = value_string.replace(',', '.')
@@ -227,6 +232,7 @@ if len(sys.argv) > 1:
         else:
             currency_value = get_exchange_rate_from_xe(currency_code, debug)
             if currency_value == -1:
+                print("Failed to get exchange rate for " + currency_code)
                 error = 1
             else:
                 currency_code_list.append(currency_code)
@@ -242,11 +248,10 @@ if len(sys.argv) > 1:
             error = 1
 
         if instrument_prize == -1:
+            print("Failed to get instrument prize for " + instrument + " " + code)
             error = 1
 
-        if error != 0:
-            print("Cannot get price for instrument " + str(code))
-        else:
+        if error == 0:
             value = float(count) * float(currency_value) * float(instrument_prize)
             table.add_row([(code + " " + instrument), str(round(value, 2))])
 
