@@ -1,0 +1,9 @@
+{
+    "url": "https://www.xe.com",
+    "css_selector_result": "#__next > main > div:nth-child(5) > div > section.relative.w-full.bg-gradient-to-l.from-blue-850.to-blue-700.bg-no-repeat > div.relative.m-auto.box-content.max-w-\\[1024px\\].px-4.py-8.md\\:px-10.md\\:pt-16.lg\\:pt-20 > div > div > div > div:nth-child(1) > p.text-lg.font-semibold.text-xe-neutral-900.md\\:text-2xl > span",
+    "css_selector_div_from": "#midmarketFromCurrency",
+    "css_selector_input_from": "#midmarketFromCurrency > div:nth-child(2) > div > input",
+    "css_selector_div_to": "#midmarketToCurrency",
+    "css_selector_input_to": "#midmarketToCurrency > div:nth-child(2) > div > input",
+    "css_selector_button_convert": "#__next > main > div:nth-child(5) > section.relative.flex.justify-center.bg-gray-100.pt-8.pb-8.md\\:pt-16.md\\:pb-16 > div > div > div.flex.flex-col.items-center.gap-6.md\\:flex-row.justify-end > button"
+}
