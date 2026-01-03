@@ -50,7 +50,7 @@ class Driver:
             raise RuntimeError("No webdriver created")
 
 
-def get_exchange_rate_from_xe(currency, page_json, debug = False, ):
+def get_exchange_rate_from_xe(currency, page_json, debug = False):
     if type(currency) != str:
         raise TypeError("Invalid currency")
 
