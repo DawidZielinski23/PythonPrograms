@@ -113,11 +113,13 @@ def get_exchange_rate_from_xe(currency, page_json, debug = False):
     except:
         raise RuntimeError("Cannot find exchange value")
 
-    pattern = r"(\d+\.\d+)\s+PLN"
-    value_re = re.search(pattern, value_field.text)
+    value_str = str(value_field.get_attribute("value"))
+    
+    if "," in value_str:
+        value_str = value_str.replace(",", ".")
 
     try:
-        value = float(value_re.group(1))
+        value = float(value_str)
     except:
         raise RuntimeError("Cannot convert value")
 
@@ -194,11 +196,14 @@ def get_prize_from_trading212(code, page_json, debug = False):
     prize = driver.web.find_element(By.XPATH, page_json["xpath"])
     value_string = str(prize.text)
 
-    if ',' in value_string:
-        value_string = value_string.replace(',', '.')
+    pattern = r"(\d+,\d+)"
+    match = re.search(pattern, value_string).group(1)
+
+    if ',' in match:
+        match = match.replace(',', '.')
 
     try:
-        value = float(value_string)
+        value = float(match)
     except:
         raise RuntimeError("Cannot convert string value to float")
 
