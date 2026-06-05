@@ -50,7 +50,7 @@ class Driver:
             raise RuntimeError("No webdriver created")
 
 
-def get_exchange_rate_from_xe(currency, page_json, debug = False):
+def get_exchange_rate_from_xe(currency, page_json, debug=False):
     if type(currency) != str:
         raise TypeError("Invalid currency")
 
@@ -62,68 +62,21 @@ def get_exchange_rate_from_xe(currency, page_json, debug = False):
     if type(page_json) != dict:
         raise TypeError("Invalid page json")
 
-    driver = Driver(page_json["url"], debug)
+    url = f"https://www.xe.com/pl/currencyconverter/convert/?Amount=1&From={currency}&To=PLN"
+
+    driver = Driver(url, debug)
+    wait = WebDriverWait(driver.web, 10)
 
     try:
-        select_from = driver.web.find_element(By.CSS_SELECTOR, page_json["css_selector_div_from"])
-        select_from.click()
-    except:
-        raise RuntimeError("Cannot find div from")
+        value_field = wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, page_json["css_selector_result"])))
 
-    try:
-        select_input_from = driver.web.find_element(By.CSS_SELECTOR, page_json["css_selector_input_from"])
-        WebDriverWait(driver.web, 2)
-        select_input_from.send_keys(currency)
-        time.sleep(1)
-        select_input_from.send_keys(Keys.ENTER)
-    except:
-        raise RuntimeError("Cannot set curency from")
+        value_str = value_field.text
+        match = re.search(r"=\s*([\d,\.]+)", value_str)
+        value_str = match.group(1).replace(",", ".")
+        return round(float(value_str), 2)
 
-    try:
-        select_to =  driver.web.find_element(By.CSS_SELECTOR, page_json["css_selector_div_to"])
-        select_to.click()
-    except:
-        raise RuntimeError("Cannot find div to")
-
-    try:
-        select_input_to =  driver.web.find_element(By.CSS_SELECTOR, page_json["css_selector_input_to"])
-        WebDriverWait(driver.web, 2)
-        select_input_to.send_keys("PLN")
-        time.sleep(1)
-        select_input_to.send_keys(Keys.ENTER)
-    except:
-        raise RuntimeError("Cannot set currency to")
-
-    try:
-        button = driver.web.find_element(By.CSS_SELECTOR, page_json["css_selector_button_convert"])
-        button.click()
-        time.sleep(2)
-    except:
-        raise RuntimeError("Cannot find convert button")
-
-    try:
-        WebDriverWait(driver.web, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, page_json["css_selector_result"])))
-    except:
-        raise RuntimeError("Exchange value not load")
-
-    WebDriverWait(driver.web, 2)
-
-    try:
-        value_field = driver.web.find_element(By.CSS_SELECTOR, page_json["css_selector_result"])
-    except:
-        raise RuntimeError("Cannot find exchange value")
-
-    value_str = str(value_field.get_attribute("value"))
-    
-    if "," in value_str:
-        value_str = value_str.replace(",", ".")
-
-    try:
-        value = float(value_str)
-    except:
-        raise RuntimeError("Cannot convert value")
-
-    return value
+    except Exception as e:
+        raise RuntimeError(f"Cannot get exchange value: {e}")
 
 def get_prize_from_investing(code, instrument, page_json, debug = False):
     if type(code) != str:
