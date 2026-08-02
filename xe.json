@@ -1,6 +1,6 @@
 {
     "url": "https://www.xe.com/pl/",
-    "css_selector_result": "#__next > main > div:nth-child(5) > div > section.relative.w-full.bg-gradient-to-l.from-blue-850.to-blue-700.bg-no-repeat > div.m-auto.max-w-\\[1024px\\].px-4.py-8.md\\:px-10.md\\:pt-16.lg\\:pt-20 > div > div > div > div:nth-child(1) > p.text-lg.font-semibold.text-xe-neutral-900.md\\:text-2xl > span",
+    "css_selector_result": "#__next > main > div:nth-child(5) > div > section.from-blue-850.relative.w-full.bg-linear-to-l.to-blue-700.bg-no-repeat > div.m-auto.max-w-5xl.px-4.py-8.md\\:px-10.md\\:pt-16.lg\\:pt-20 > div > div > div > div:nth-child(1) > p.text-lg.font-semibold.text-xe-neutral-900.md\\:text-2xl > span",
     "css_selector_div_from": "#midmarketFromCurrency",
     "css_selector_input_from": "#midmarketFromCurrency",
     "css_selector_div_to": "#midmarketToCurrency",
